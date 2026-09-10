@@ -158,6 +158,34 @@ when you move more than ~10 m, so the verdict changes as you walk.
 
 Tuning constants are all in `src/config.ts`.
 
+## Inputs and outputs
+
+### In
+
+| Source | Used for | Where |
+| --- | --- | --- |
+| `.env` | credentials; a blank value drops that half of the app into mock mode | `EXPO_PUBLIC_LTA_ACCOUNT_KEY`, `EXPO_PUBLIC_ONEMAP_EMAIL`, `EXPO_PUBLIC_ONEMAP_PASSWORD` |
+| LTA DataMall | arrivals, stop list, train alerts, crowding | `datamall2.mytransport.sg/ltaodataservice` — `/v3/BusArrival`, `/BusStops`, `/TrainServiceAlerts`, `/PCDRealTime` |
+| OneMap | sign-in, geocoding, A-to-B routing, map tiles | `www.onemap.gov.sg` — `/api/auth/post/getToken`, `/api/common/elastic/search`, `/api/public/routingsvc/route`, `/maps/tiles/Default/` |
+| `src/api/mock/` | stands in for either service when its key is blank | bundled fixtures, no network |
+
+### Out
+
+The app has no backend of its own, no analytics and no telemetry — the API calls
+above are the only requests it ever makes. Everything it remembers, it keeps on
+the device:
+
+| Store | Key | Contents |
+| --- | --- | --- |
+| `AsyncStorage` | `sg-transit/bus-stops/v1` | cached stop database, so the full stop list is fetched once rather than per launch |
+| `AsyncStorage` | `sg-transit/favourites/v1` | your starred stops |
+| memory only | — | the OneMap access token, deliberately *not* persisted so it can never outlive the process that validated it |
+
+One caveat worth knowing: `EXPO_PUBLIC_*` variables are inlined into the
+JavaScript bundle at build time, so anyone holding a built copy of the app can
+read those credentials. They are fine for local and personal use; see
+**Going live** before shipping to anyone else.
+
 ## Layout
 
 ```
