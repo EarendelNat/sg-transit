@@ -42,6 +42,7 @@
       ]
     ],
     "experiments": {
+      "baseUrl": "/sg-transit",
       "typedRoutes": true,
       "reactCompiler": true
     }

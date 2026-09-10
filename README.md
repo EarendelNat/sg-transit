@@ -7,6 +7,31 @@ it?" verdict that combines your GPS position with the live bus ETA.
 Built with Expo SDK 57 and TypeScript. Runs on a real phone through **Expo Go** —
 no Xcode or Android Studio required.
 
+## Live demo
+
+**https://earendelnat.github.io/sg-transit/**
+
+Runs on the bundled mock fixtures, not live transit data — the site is built
+with blank API keys on purpose, because `EXPO_PUBLIC_*` values are inlined into
+the JavaScript bundle at build time and this repository is public. It is there
+to show the interface and the flows, not real arrival times.
+
+### Redeploying it
+
+```bash
+npx expo export --platform web        # writes dist/
+# then publish dist/ to the gh-pages branch, with a .nojekyll file alongside it
+```
+
+Two details that will break the site if they are dropped:
+
+- `experiments.baseUrl` in `app.json` must stay `"/sg-transit"`, matching the
+  repository name. Without it every asset is requested from the domain root and
+  the page loads blank.
+- `.nojekyll` must sit at the root of `gh-pages`. GitHub otherwise runs Jekyll,
+  which strips the `_expo/` directory because it starts with an underscore, and
+  the bundle 404s.
+
 ## Quick start
 
 ```bash
